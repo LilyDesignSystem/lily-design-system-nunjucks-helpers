@@ -27,7 +27,7 @@ This helper is the opinionated, reusable counterpart split into:
 
 ## 1. Goal
 
-Give a Nunjucks-rendered application a drop-in, headless theme picker
+Give a Nunjucks-rendered application a drop-in, headless theme select
 that:
 
 1. Renders an accessible native `<select>` of available themes from a
@@ -67,7 +67,7 @@ that:
   the lifecycle (storage, link swap, attribute set) can only happen
   in the browser. The macro emits a `<select>` with
   `data-lily-theme-select-*` hooks and the client.js looks them up.
-- **One `<link>` per picker name.** Switching themes mutates `href`
+- **One `<link>` per select name.** Switching themes mutates `href`
   on a single `<link rel="stylesheet" data-lily-theme-select="{name}">`.
   Only the active theme is fetched.
 - **`data-theme` attribute is the activation switch.** Theme CSS
@@ -77,7 +77,7 @@ that:
   convention (`{% from "…" import themeSelect %}` then
   `{{ themeSelect({label: "Theme", themesUrl: "/assets/themes/", themes: […]}) }}`).
 - **Vanilla ES module client.js** — no framework dependency. The
-  client exports `initThemeSelect(root, opts?)` to wire one picker
+  client exports `initThemeSelect(root, opts?)` to wire one select
   and `autoInit()` to find every `data-lily-theme-select-root` on
   the page.
 - **SSR-safe** — the macro is a pure template. The client.js guards
@@ -134,7 +134,7 @@ and otherwise from the slug with its first character upper-cased
 | ------------------- | --------------------------------------------------- | ------- |
 | `normaliseThemesUrl(url)` | `(string) => string`                          | Ensure exactly one trailing `/`. |
 | `themeHref(url, slug, extension)` | `(string, string, string) => string`  | Build the theme href. |
-| `initThemeSelect(root, opts?)` | `(HTMLElement, object?) => {setTheme, destroy}` | Wire one picker `<select>`. |
+| `initThemeSelect(root, opts?)` | `(HTMLElement, object?) => {setTheme, destroy}` | Wire one select `<select>`. |
 | `autoInit(opts?)`   | `(object?) => Array<{setTheme, destroy}>`           | Find every `[data-lily-theme-select-root]` and init it. |
 
 `initThemeSelect` returns a controller with:
@@ -210,7 +210,7 @@ time. The client.js touches `document` only after
   semantics for free.
 - WCAG 2.2 AAA is the target. Focus styling is the consumer's CSS
   concern.
-- The picker never emits the word `"default"`.
+- The select never emits the word `"default"`.
 
 ## 7. Testing acceptance criteria
 

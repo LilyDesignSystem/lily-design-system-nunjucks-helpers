@@ -27,7 +27,7 @@ client-side JS module.
 ## 1. Goal
 
 Give a Nunjucks-rendered application a drop-in, headless locale
-picker that:
+select that:
 
 1. Renders an accessible native `<select>` of available locales from
    a Nunjucks macro.
@@ -71,9 +71,9 @@ picker that:
   HTML with `data-lily-locale-select-*` hooks; the client.js owns
   the apply lifecycle (lang, dir, storage, navigator, change events).
 - **The `lang` attribute is the source of truth** (WCAG 3.1.1, HTML
-  Living Standard). The picker writes there.
+  Living Standard). The select writes there.
 - **BCP 47 hyphen form on the wire.** Consumer codes can use `_` or
-  `-`; the picker normalises to `-` when writing to `lang`. The
+  `-`; the select normalises to `-` when writing to `lang`. The
   client preserves the consumer's original form when firing
   `onChange`.
 - **Single `opts` object on the macro** — matches the Lily Nunjucks
@@ -313,4 +313,4 @@ document populated from the macro output.
 - License: MIT or Apache-2.0 or GPL-2.0 or GPL-3.0 or BSD-3-Clause
   (or contact for other terms)
 - Contact: Joel Parker Henderson &lt;joel@joelparkerhenderson.com&gt;
-- Canonical locale list: [locales.tsv](./locales.tsv) — 436 codes
+- Canonical locale list: [locales.tsv](../locales.tsv) — 436 codes

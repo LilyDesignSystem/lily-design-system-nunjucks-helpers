@@ -26,7 +26,7 @@ differ.
 ## 1. Goal
 
 Give a Nunjucks-rendered application a drop-in, headless text-size
-picker that:
+select that:
 
 1. Renders an accessible native `<select>` of available size slugs
    from a Nunjucks macro.
@@ -63,7 +63,7 @@ picker that:
   HTML with `data-lily-text-size-select-*` hooks; the client.js owns
   the apply lifecycle (data-text-size, storage, change events).
 - **The `data-text-size` attribute is the source of truth.** The
-  picker writes there; consumer CSS keys typography off it.
+  select writes there; consumer CSS keys typography off it.
 - **Single `opts` object on the macro** — matches the Lily Nunjucks
   convention.
 - **Vanilla ES module client.js** — no framework dependency. Exports
