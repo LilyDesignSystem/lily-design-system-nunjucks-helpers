@@ -1,15 +1,15 @@
 {#
-  Example 02 — Native <select> with pretty labels.
+  Example 02 — A long locale list with pretty labels.
 
-  The default localeSelect macro already renders a native <select>,
-  so this example just feeds it a longer locale list plus a
-  `localeLabels` map for human-readable option text. Best for >~12
-  locales or when the design system uses dropdowns for setting
-  controls.
+  This example feeds the default macro a longer locale list plus a
+  `localeLabels` map for human-readable option text. The labels are
+  also what the client's typeahead matches on, so with these labels
+  in place, typing "fr" inside the open listbox jumps to "Français"
+  rather than requiring the raw code.
 
-  Outcome: a single <select> populated with one <option> per locale,
-  each carrying its own BCP 47 `lang`. The client.js drives
-  lang/dir/onChange off the <select>'s "change" event.
+  Outcome: one collapsed trigger button, and a listbox populated with
+  one <li role="option"> per locale, each carrying its own BCP 47
+  `lang`. Committing an option drives lang/dir/storage/onChange.
 #}
 {% from "../locale-select.njk" import localeSelect %}
 
