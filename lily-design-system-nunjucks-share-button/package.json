@@ -1,7 +1,7 @@
 {
-  "name": "lily-design-system-nunjucks-text-size-select",
-  "version": "0.2.0",
-  "description": "Lily Design System - Nunjucks 3 text size select",
+  "name": "lily-design-system-nunjucks-share-button",
+  "version": "0.1.0",
+  "description": "Lily Design System - Nunjucks 3 share button",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -11,7 +11,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./template": "./dist/text-size-select.njk"
+    "./template": "./dist/share-button.njk"
   },
   "files": [
     "dist",
@@ -26,8 +26,8 @@
     "design",
     "system",
     "nunjucks",
-    "text-size",
-    "select"
+    "share",
+    "button"
   ],
   "author": "joel@joelparkerhenderson.com",
   "license": "MIT"
