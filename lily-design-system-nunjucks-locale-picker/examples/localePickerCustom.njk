@@ -1,6 +1,6 @@
 {#
-  localeChooserCustom — a thin wrapper around the canonical
-  localeChooser macro that swaps the default globe glyph for a
+  localePickerCustom — a thin wrapper around the canonical
+  localePicker macro that swaps the default globe glyph for a
   project-supplied inline SVG.
 
   This file is shipped with the examples directory so example 03
@@ -11,8 +11,8 @@
   How the override works:
 
     The Nunjucks equivalent of "children" is a `{% call %}` block.
-    Calling localeChooser with one replaces the default
-    `<span class="locale-chooser-icon">` (which holds U+1F310 GLOBE
+    Calling localePicker with one replaces the default
+    `<span class="locale-picker-icon">` (which holds U+1F310 GLOBE
     WITH MERIDIANS) INSIDE the button with the block body. Everything
     else is untouched: the root <div>, the hidden input, the button's
     ARIA, and the <ul role="listbox"> of options all still come from
@@ -31,28 +31,28 @@
     - Keep it non-interactive. Nothing focusable belongs inside a
       <button>.
     - Prefer `currentColor` so consumer CSS drives the colour from
-      `.locale-chooser-button`.
+      `.locale-picker-button`.
 
   When a call block is not enough:
 
     If you need a control the macro cannot render at all, skip the
     macro and hand-write the DOM with the same hooks —
-    `data-lily-locale-chooser-root`, `-button`, `-list`, `-input`,
+    `data-lily-locale-picker-root`, `-button`, `-list`, `-input`,
     plus `role="option"` and `data-value` on each choice.
-    `initLocaleChooser(root)` works against any conforming DOM, and
+    `initLocalePicker(root)` works against any conforming DOM, and
     returns an inert controller when the button or the list is
     missing.
 
   Invoke this wrapper plainly — it takes no caller block of its own:
 
-    {{ localeChooserCustom({label: "Language", locales: ["en", "fr"]}) }}
+    {{ localePickerCustom({label: "Language", locales: ["en", "fr"]}) }}
 #}
-{% from "../locale-chooser.njk" import localeChooser %}
+{% from "../locale-picker.njk" import localePicker %}
 
-{%- macro localeChooserCustom(opts) -%}
-{% call localeChooser(opts) %}
+{%- macro localePickerCustom(opts) -%}
+{% call localePicker(opts) %}
     <svg
-        class="locale-chooser-icon"
+        class="locale-picker-icon"
         viewBox="0 0 16 16"
         width="16"
         height="16"

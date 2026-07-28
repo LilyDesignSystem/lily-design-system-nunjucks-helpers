@@ -1,11 +1,11 @@
 {#
-  ShareChooser macro — glyph button that opens the native share sheet
+  SharePicker macro — glyph button that opens the native share sheet
   where the browser has one, and otherwise a disclosure list of
   consumer-supplied destinations plus a copy-the-URL action.
 
   HTML tag: <div> (root), <button> + <ul> (disclosure, NOT a menu)
-  CSS class: share-chooser
-  Companion runtime: share-chooser.client.js
+  CSS class: share-picker
+  Companion runtime: share-picker.client.js
 
   This is the first helper in the catalog that owns an ACTION rather
   than a user preference. It applies nothing to the document and
@@ -31,7 +31,7 @@
 
   The function-based API survives on the client, where functions are
   callable: pass `targets` with function `href`s to
-  `initShareChooser(root, {targets})` and the client re-resolves every
+  `initSharePicker(root, {targets})` and the client re-resolves every
   anchor's href from the live URL. See spec/index.md §3.3.
 
   Params (single `opts` object):
@@ -47,7 +47,7 @@
                     newTab  — boolean, default true. False renders the
                               link without target="_blank".
     url         — string. The URL to share. Emitted as
-                  data-lily-share-chooser-url for the client; when unset
+                  data-lily-share-picker-url for the client; when unset
                   the client falls back to location.href at share time.
     title       — string. Passed to the native share sheet.
     text        — string. Passed to the native share sheet.
@@ -61,7 +61,7 @@
     name        — string, default "share". Discriminator used to derive
                   ids.
     id          — string. Id prefix for the list and its items.
-                  Defaults to "share-chooser-{name}". Supply an explicit
+                  Defaults to "share-picker-{name}". Supply an explicit
                   id when rendering two instances that share a `name`.
     classes     — string. Extra CSS classes on the root <div>.
     attributes  — object. Extra HTML attributes spread onto the root.
@@ -69,13 +69,13 @@
   Custom glyph: call the macro with a `{% call %}` block and the block
   body replaces the default glyph inside the button:
 
-    {% call shareChooser({label: "Share", targets: [...]}) %}
+    {% call sharePicker({label: "Share", targets: [...]}) %}
       <svg aria-hidden="true">…</svg>
     {% endcall %}
 
   Usage:
-    {% from "./share-chooser.njk" import shareChooser %}
-    {{ shareChooser({
+    {% from "./share-picker.njk" import sharePicker %}
+    {{ sharePicker({
       label: "Share this page",
       url: page.url,
       targets: [
@@ -87,7 +87,7 @@
       copyFailedLabel: "Could not copy — copy it from the address bar"
     }) }}
 
-  Then load share-chooser.client.js once and call autoInit().
+  Then load share-picker.client.js once and call autoInit().
 
   NOTE: the destination links WORK without JavaScript — they are real
   hrefs — but the list cannot be opened and copy does not function. See
@@ -99,45 +99,45 @@
 
   Spec: spec/index.md §4.1 (macro parameters), §4.2 (DOM contract).
 #}
-{%- macro shareChooser(opts) -%}
+{%- macro sharePicker(opts) -%}
 {%- set name = opts.name | default("share") -%}
-{%- set id = opts.id | default("share-chooser-" + name) -%}
+{%- set id = opts.id | default("share-picker-" + name) -%}
 {%- set listId = id + "-list" -%}
 {%- set strategy = opts.strategy | default("auto") -%}
 {%- set targets = opts.targets | default([]) -%}
 <div
-  class="share-chooser{% if opts.classes %} {{ opts.classes }}{% endif %}"
-  data-lily-share-chooser-root
-  data-lily-share-chooser-name="{{ name }}"
-  data-lily-share-chooser-strategy="{{ strategy }}"
-  {%- if opts.url %} data-lily-share-chooser-url="{{ opts.url }}"{% endif %}
-  {%- if opts.title %} data-lily-share-chooser-title="{{ opts.title }}"{% endif %}
-  {%- if opts.text %} data-lily-share-chooser-text="{{ opts.text }}"{% endif %}
-  {%- if opts.copiedLabel %} data-lily-share-chooser-copied-label="{{ opts.copiedLabel }}"{% endif %}
-  {%- if opts.copyFailedLabel %} data-lily-share-chooser-copy-failed-label="{{ opts.copyFailedLabel }}"{% endif %}
+  class="share-picker{% if opts.classes %} {{ opts.classes }}{% endif %}"
+  data-lily-share-picker-root
+  data-lily-share-picker-name="{{ name }}"
+  data-lily-share-picker-strategy="{{ strategy }}"
+  {%- if opts.url %} data-lily-share-picker-url="{{ opts.url }}"{% endif %}
+  {%- if opts.title %} data-lily-share-picker-title="{{ opts.title }}"{% endif %}
+  {%- if opts.text %} data-lily-share-picker-text="{{ opts.text }}"{% endif %}
+  {%- if opts.copiedLabel %} data-lily-share-picker-copied-label="{{ opts.copiedLabel }}"{% endif %}
+  {%- if opts.copyFailedLabel %} data-lily-share-picker-copy-failed-label="{{ opts.copyFailedLabel }}"{% endif %}
   {%- if opts.attributes %}{% for k, v in opts.attributes %} {{ k }}="{{ v }}"{% endfor %}{% endif %}
 >
-<button type="button" class="share-chooser-button" aria-label="{{ opts.label }}" aria-expanded="false" aria-controls="{{ listId }}" data-lily-share-chooser-button>
-{%- if caller %}{{ caller() }}{% else %}<span class="share-chooser-icon" aria-hidden="true">&#10148;</span>{% endif -%}
+<button type="button" class="share-picker-button" aria-label="{{ opts.label }}" aria-expanded="false" aria-controls="{{ listId }}" data-lily-share-picker-button>
+{%- if caller %}{{ caller() }}{% else %}<span class="share-picker-icon" aria-hidden="true">&#10148;</span>{% endif -%}
 </button>
-<ul class="share-chooser-list" id="{{ listId }}" hidden data-lily-share-chooser-list>
+<ul class="share-picker-list" id="{{ listId }}" hidden data-lily-share-picker-list>
 {%- for target in targets -%}
   {#- A real link, not role="menuitem": these ARE navigation, and
       menuitem would strip middle-click, open-in-new-tab and
       copy-link-address. No role override is emitted, deliberately. -#}
-  <li class="share-chooser-list-item">
-    <a class="share-chooser-target" id="{{ id }}-target-{{ loop.index0 }}" data-target-id="{{ target.id }}" href="{{ target.href }}"{% if target.newTab !== false %} target="_blank"{% endif %} rel="noopener noreferrer">{{ target.label }}</a>
+  <li class="share-picker-list-item">
+    <a class="share-picker-target" id="{{ id }}-target-{{ loop.index0 }}" data-target-id="{{ target.id }}" href="{{ target.href }}"{% if target.newTab !== false %} target="_blank"{% endif %} rel="noopener noreferrer">{{ target.label }}</a>
   </li>
 {%- endfor -%}
 {%- if opts.copyLabel -%}
-  <li class="share-chooser-list-item">
-    <button type="button" class="share-chooser-copy" id="{{ id }}-copy" data-lily-share-chooser-copy>{{ opts.copyLabel }}</button>
+  <li class="share-picker-list-item">
+    <button type="button" class="share-picker-copy" id="{{ id }}-copy" data-lily-share-picker-copy>{{ opts.copyLabel }}</button>
   </li>
 {%- endif -%}
 </ul>
 {#- Copying gives no visual feedback of its own, so the outcome is
     announced. Empty until something happens, so it stays silent on
     load; aria-live announces mutations only. -#}
-<p class="share-chooser-status" aria-live="polite" data-lily-share-chooser-status></p>
+<p class="share-picker-status" aria-live="polite" data-lily-share-picker-status></p>
 </div>
 {%- endmacro -%}

@@ -1,9 +1,9 @@
 {#
-  LocaleChooser macro — icon button that opens a listbox of locales.
+  LocalePicker macro — icon button that opens a listbox of locales.
 
   HTML tag: <div> (root), <button> + <ul role="listbox">
-  CSS class: locale-chooser
-  Companion runtime: locale-chooser.client.js
+  CSS class: locale-picker
+  Companion runtime: locale-picker.client.js
 
   BREAKING (Unreleased): this macro no longer renders a native
   <select>. It renders an icon button (U+1F310 GLOBE WITH MERIDIANS + U+FE0E VARIATION SELECTOR-15)
@@ -16,7 +16,7 @@
                            is the ONLY accessible name it has.
     locales              — array<string>, required. Available locale codes.
     value                — string. Initial code, emitted as
-                           data-lily-locale-chooser-value for the client.
+                           data-lily-locale-picker-value for the client.
     defaultValue         — string. Initial code when nothing else is supplied.
     storageKey           — string. If non-empty, client.js persists to localStorage.
     detectFromNavigator  — boolean. If true, client.js resolves navigator.languages.
@@ -24,7 +24,7 @@
     applyDir             — boolean. If false, client.js never writes `dir`.
     localeLabels         — object<string,string>. Pretty label per code.
     id                   — string. Id prefix for the listbox and its options.
-                           Defaults to "locale-chooser-{name}". Supply an
+                           Defaults to "locale-picker-{name}". Supply an
                            explicit id when rendering two instances that
                            share a `name`.
     classes              — string. Extra CSS classes on the root <div>.
@@ -39,12 +39,12 @@
   Custom glyph: call the macro with a `{% call %}` block and the block
   body replaces the default globe inside the button.
 
-  NOTE: the button does nothing until locale-chooser.client.js runs. See
+  NOTE: the button does nothing until locale-picker.client.js runs. See
   docs/ssr.md — this is a real no-JS regression from the old <select>.
 
   Spec: spec/index.md §4.1, §4.2.
 #}
-{%- macro localeChooser(opts) -%}
+{%- macro localePicker(opts) -%}
 {%- set name = opts.name | default("locale") -%}
 {%- set value = opts.value | default("") -%}
 {%- set storageKey = opts.storageKey | default("") -%}
@@ -52,7 +52,7 @@
 {%- set detectFromNavigator = opts.detectFromNavigator | default(false) -%}
 {%- set applyDir = opts.applyDir if opts.applyDir is sameas(false) else true -%}
 {%- set localeLabels = opts.localeLabels | default({}) -%}
-{%- set id = opts.id | default("locale-chooser-" + name) -%}
+{%- set id = opts.id | default("locale-picker-" + name) -%}
 {%- set listId = id + "-list" -%}
 {#- Server-side selected resolution. storage / navigator are client-only,
     so the client may correct this after hydration; the point is that the
@@ -60,24 +60,24 @@
 {%- set fallback = "en" if "en" in opts.locales else opts.locales[0] -%}
 {%- set selected = value or defaultValue or fallback -%}
 <div
-  class="locale-chooser{% if opts.classes %} {{ opts.classes }}{% endif %}"
-  data-lily-locale-chooser-root
-  data-lily-locale-chooser-name="{{ name }}"
-  data-lily-locale-chooser-storage-key="{{ storageKey }}"
-  data-lily-locale-chooser-default-value="{{ defaultValue }}"
-  data-lily-locale-chooser-detect-from-navigator="{{ 'true' if detectFromNavigator else 'false' }}"
-  data-lily-locale-chooser-apply-dir="{{ 'true' if applyDir else 'false' }}"
-  {%- if value %} data-lily-locale-chooser-value="{{ value }}"{% endif %}
+  class="locale-picker{% if opts.classes %} {{ opts.classes }}{% endif %}"
+  data-lily-locale-picker-root
+  data-lily-locale-picker-name="{{ name }}"
+  data-lily-locale-picker-storage-key="{{ storageKey }}"
+  data-lily-locale-picker-default-value="{{ defaultValue }}"
+  data-lily-locale-picker-detect-from-navigator="{{ 'true' if detectFromNavigator else 'false' }}"
+  data-lily-locale-picker-apply-dir="{{ 'true' if applyDir else 'false' }}"
+  {%- if value %} data-lily-locale-picker-value="{{ value }}"{% endif %}
   {%- if opts.attributes %}{% for k, v in opts.attributes %} {{ k }}="{{ v }}"{% endfor %}{% endif %}
 >
-<input type="hidden" name="{{ name }}" value="{{ selected }}" data-lily-locale-chooser-input>
-<button type="button" class="locale-chooser-button" aria-label="{{ opts.label }}" aria-haspopup="listbox" aria-expanded="false" aria-controls="{{ listId }}" data-lily-locale-chooser-button>
-{%- if caller %}{{ caller() }}{% else %}<span class="locale-chooser-icon" aria-hidden="true">&#127760;&#65038;</span>{% endif -%}
+<input type="hidden" name="{{ name }}" value="{{ selected }}" data-lily-locale-picker-input>
+<button type="button" class="locale-picker-button" aria-label="{{ opts.label }}" aria-haspopup="listbox" aria-expanded="false" aria-controls="{{ listId }}" data-lily-locale-picker-button>
+{%- if caller %}{{ caller() }}{% else %}<span class="locale-picker-icon" aria-hidden="true">&#127760;&#65038;</span>{% endif -%}
 </button>
-<ul class="locale-chooser-list" id="{{ listId }}" role="listbox" aria-label="{{ opts.label }}" tabindex="-1" hidden data-lily-locale-chooser-list>
+<ul class="locale-picker-list" id="{{ listId }}" role="listbox" aria-label="{{ opts.label }}" tabindex="-1" hidden data-lily-locale-picker-list>
 {%- for locale in opts.locales -%}
   {%- set tag = locale | replace("_", "-") -%}
-  <li class="locale-chooser-option" id="{{ id }}-option-{{ loop.index0 }}" role="option" aria-selected="{{ 'true' if locale == selected else 'false' }}" data-value="{{ locale }}" lang="{{ tag }}">
+  <li class="locale-picker-option" id="{{ id }}-option-{{ loop.index0 }}" role="option" aria-selected="{{ 'true' if locale == selected else 'false' }}" data-value="{{ locale }}" lang="{{ tag }}">
     {%- if localeLabels[locale] -%}
       {{ localeLabels[locale] }}
     {%- else -%}

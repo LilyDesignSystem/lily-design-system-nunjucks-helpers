@@ -1,18 +1,18 @@
 {#
-  themeChooserCustom — a thin wrapper around the shipped themeChooser
+  themePickerCustom — a thin wrapper around the shipped themePicker
   macro that bakes in a house glyph.
 
-  This used to be a FORK of theme-chooser.njk, because the old macro
+  This used to be a FORK of theme-picker.njk, because the old macro
   did not inspect `caller`. That is no longer true: the shipped macro
   supports `{% call %}` directly, and the block body replaces the
-  default `<span class="theme-chooser-icon">` INSIDE the button.
+  default `<span class="theme-picker-icon">` INSIDE the button.
   Everything else — the root <div>, the hidden input, the button's
   ARIA attributes, and the <ul role="listbox"> with its options — is
   still rendered by the shipped macro, so the keyboard contract and
   the data-lily-* hooks keep working.
 
   Wrapping is the useful pattern when a project wants one icon
-  everywhere: call this macro instead of themeChooser and every
+  everywhere: call this macro instead of themePicker and every
   instance gets the same glyph, without repeating the `{% call %}`
   block at each call site.
 
@@ -24,10 +24,10 @@
   change the option markup; the caller block no longer renders
   options at all.
 #}
-{%- from "../theme-chooser.njk" import themeChooser -%}
+{%- from "../theme-picker.njk" import themePicker -%}
 
-{%- macro themeChooserCustom(opts) -%}
-{%- call themeChooser(opts) -%}
+{%- macro themePickerCustom(opts) -%}
+{%- call themePicker(opts) -%}
 <svg class="my-theme-glyph" width="16" height="16" viewBox="0 0 16 16"
      aria-hidden="true" focusable="false">
   <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/>
